@@ -22,7 +22,6 @@ void display() {
 
   for (size_t i = 0; i < heat_field.height(); i++)
     for (size_t j = 0; j < heat_field.width(); j++) {
-
       const double tone = heat_field.at(i, j) / 10.0;
 
       if (i == 0)
