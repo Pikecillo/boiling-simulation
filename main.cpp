@@ -3,7 +3,7 @@
 
 #include "HeatField.h"
 
-const size_t height = 128, width = 128;
+const size_t height = 512, width = 512;
 HeatField heat_field(height, width);
 
 void init() {
@@ -17,12 +17,12 @@ void init() {
 void display() {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  const double height = static_cast<double>(heat_field.height());
-  const double width = static_cast<double>(heat_field.width());
+  const float height = static_cast<float>(heat_field.height());
+  const float width = static_cast<float>(heat_field.width());
 
   for (size_t i = 0; i < heat_field.height(); i++)
     for (size_t j = 0; j < heat_field.width(); j++) {
-      const double tone = heat_field.at(i, j) / 10.0;
+      const float tone = heat_field.at(i, j) / 10.0;
 
       if (i == 0)
         glColor3f(1.0, 0.0, 0.0);
@@ -31,8 +31,8 @@ void display() {
       else
         glColor3f(tone, tone, 1.0);
 
-      const double x0 = j / width, y0 = i / height;
-      const double x1 = (j + 1) / width, y1 = (i + 1) / height;
+      const float x0 = j / width, y0 = i / height;
+      const float x1 = (j + 1) / width, y1 = (i + 1) / height;
 
       glBegin(GL_POLYGON);
       glVertex3f(x0, y0, 0.0);
