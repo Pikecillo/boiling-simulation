@@ -16,6 +16,8 @@ public:
 
   float &at(size_t i, size_t j) { return m_elements[i * m_cols + j]; }
 
+  size_t size() const { return m_elements.size(); };
+
 private:
   size_t m_cols, m_rows;
   std::vector<T> m_elements;

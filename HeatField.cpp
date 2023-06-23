@@ -6,17 +6,20 @@ HeatField::HeatField(size_t height, size_t width)
   const float low = 2.0;
   const float medium = 2.0;
 
-  for (size_t i = 0; i < m_heat.rows(); i++)
-    for (size_t j = 0; j < m_heat.cols(); j++) {
-      float heat;
-      if (i == 0)
-        heat = 0.99 * high * fabs(sin(j / 20.0));
-      else
-        heat = (i == (m_heat0.rows() - 1) ? low : medium);
+  for (size_t idx = 0; idx < m_heat.size(); idx++) {
+    size_t i = idx / m_heat.cols();
+    size_t j = idx % m_heat.cols();
 
-      m_heat.at(i, j) = m_heat0.at(i, j) = m_heat1.at(i, j) = heat;
-    }
+    float heat;
+    if (i == 0)
+      heat = 0.99 * high * fabs(sin(j / 20.0));
+    else
+      heat = (i == (m_heat0.rows() - 1) ? low : medium);
+
+    m_heat.at(i, j) = m_heat0.at(i, j) = m_heat1.at(i, j) = heat;
+  }
 }
+
 
 void HeatField::update() {
   m_heat0 = m_heat;
@@ -86,25 +89,18 @@ void HeatField::surface_tension_update(const Matrixd &field0, Matrixd &field) {
     for (size_t j = 0; j < field0.cols(); j++) {
       // If there is a change in the sign of phase then
       // the point is on the interface
-      if (phase_function(field0.at(i, j)) *
-                  phase_function(field0.at(i, j - 1)) <
-              0.0 ||
-          phase_function(field0.at(i, j)) *
-                  phase_function(field0.at(i, j + 1)) <
-              0.0 ||
-          phase_function(field0.at(i, j)) *
-                  phase_function(field0.at(i - 1, j)) <
-              0.0 ||
-          phase_function(field0.at(i, j)) *
-                  phase_function(field0.at(i + 1, j)) <
-              0.0) {
-
-        field.at(i, j) += (rho * mean_curvature(field0, i, j));
+      if (phase_function(field0.at(i, j)) * phase_function(field0.at(i, j - 1)) < 0.0 ||
+              phase_function(field0.at(i, j)) * phase_function(field0.at(i, j + 1)) < 0.0 ||
+              phase_function(field0.at(i, j)) * phase_function(field0.at(i - 1, j)) < 0.0 ||
+              phase_function(field0.at(i, j)) * phase_function(field0.at(i + 1, j)) < 0.0) {
+          field.at(i, j) += rho * mean_curvature(field0, i, j);
       }
     }
 }
 
-float HeatField::phase_function(float T) { return tanh(alpha * (T - Tc)); }
+float HeatField::phase_function(float T) {
+    return tanh(alpha * (T - Tc));
+}
 
 void HeatField::normal(const Matrixd &heat, int x, int y, float n[]) {
   n[0] = heat.at(y, x) - heat.at(y, x - 1);
