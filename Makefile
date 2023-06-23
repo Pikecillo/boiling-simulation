@@ -2,7 +2,7 @@
 CC := g++
 
 # Compiler flags
-CFLAGS := -std=c++11 -Wall -Wextra -Werror -pedantic -march=native -O3 -ftree-vectorize -fopt-info-vec
+CFLAGS := -std=c++11 -Wall -Wextra -Werror -pedantic -march=native -O3 -ftree-vectorize -fopt-info-vec -ffast-math
 
 # Libraries
 LIBS := -lglut -lGL -lGLU
