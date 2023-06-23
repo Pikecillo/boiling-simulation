@@ -12,7 +12,7 @@ public:
 
   size_t width() const { return m_heat.cols(); }
 
-  double at(size_t i, size_t j) const { return m_heat.at(i, j); }
+  float at(size_t i, size_t j) const { return m_heat.at(i, j); }
 
   void update();
 
@@ -22,21 +22,21 @@ private:
   void latent_heat_update(const Matrixd &field0, Matrixd &field);
   void surface_tension_update(const Matrixd &field0, Matrixd &field);
 
-  double phase_function(double T);
-  void normal(const Matrixd &heat, int x, int y, double n[]);
-  void add_vectors(double a, double v1[], double b, double v2[], double v[]);
-  double mean_curvature(const Matrixd &heat, int x, int y);
-  double curvature(const Matrixd &heat, double px, double py, double nx,
-                   double ny);
-  double module(double v[]);
+  float phase_function(float T);
+  void normal(const Matrixd &heat, int x, int y, float n[]);
+  void add_vectors(float a, float v1[], float b, float v2[], float v[]);
+  float mean_curvature(const Matrixd &heat, int x, int y);
+  float curvature(const Matrixd &heat, float px, float py, float nx,
+                   float ny);
+  float module(float v[]);
 
 private:
-  static constexpr double epsilon = 0.3;
-  static constexpr double alpha = 1.7;
-  static constexpr double buoyancy = 0.5;
-  static constexpr double Tc = 10.0;
-  static constexpr double latent_heat = 0.1;
-  static constexpr double rho = 0.00;
+  static constexpr float epsilon = 0.3;
+  static constexpr float alpha = 1.7;
+  static constexpr float buoyancy = 0.5;
+  static constexpr float Tc = 10.0;
+  static constexpr float latent_heat = 0.1;
+  static constexpr float rho = 0.00;
 
   Matrixd m_heat, m_heat0, m_heat1;
 };

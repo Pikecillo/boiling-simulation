@@ -2,14 +2,13 @@
 
 HeatField::HeatField(size_t height, size_t width)
     : m_heat(height, width), m_heat0(height, width), m_heat1(height, width) {
-  const double high = 9.9;
-  const double low = 2.0;
-  const double medium = 2.0;
+  const float high = 9.9;
+  const float low = 2.0;
+  const float medium = 2.0;
 
   for (size_t i = 0; i < m_heat.rows(); i++)
     for (size_t j = 0; j < m_heat.cols(); j++) {
-      double heat;
-
+      float heat;
       if (i == 0)
         heat = 0.99 * high * fabs(sin(j / 20.0));
       else
@@ -42,7 +41,7 @@ void HeatField::update() {
 }
 
 void HeatField::heat_diffusion_update(const Matrixd &field0, Matrixd &field) {
-  const double quarter_diffusion = 0.25 * epsilon;
+  const float quarter_diffusion = 0.25 * epsilon;
 
   for (size_t i = 1; i + 1 < field0.rows(); i++)
     for (size_t j = 1; j + 1 < field0.cols(); j++) {
@@ -59,7 +58,7 @@ void HeatField::heat_diffusion_update(const Matrixd &field0, Matrixd &field) {
 }
 
 void HeatField::buoyancy_update(const Matrixd &field0, Matrixd &field) {
-  const double half_buoyancy = 0.5 * buoyancy;
+  const float half_buoyancy = 0.5 * buoyancy;
 
   for (size_t i = 1; i + 1 < field0.rows(); i++)
     for (size_t j = 1; j + 1 < field0.cols(); j++) {
@@ -84,7 +83,7 @@ void HeatField::latent_heat_update(const Matrixd &field0, Matrixd &field) {
 
 void HeatField::surface_tension_update(const Matrixd &field0, Matrixd &field) {
   for (size_t i = 0; i < field0.rows(); i++)
-    for (int j = 0; j < field0.cols(); j++) {
+    for (size_t j = 0; j < field0.cols(); j++) {
       // If there is a change in the sign of phase then
       // the point is on the interface
       if (phase_function(field0.at(i, j)) *
@@ -105,23 +104,21 @@ void HeatField::surface_tension_update(const Matrixd &field0, Matrixd &field) {
     }
 }
 
-double HeatField::phase_function(double T) { return tanh(alpha * (T - Tc)); }
+float HeatField::phase_function(float T) { return tanh(alpha * (T - Tc)); }
 
-void HeatField::normal(const Matrixd &heat, int x, int y, double n[]) {
+void HeatField::normal(const Matrixd &heat, int x, int y, float n[]) {
   n[0] = heat.at(y, x) - heat.at(y, x - 1);
   n[1] = heat.at(y, x) - heat.at(y - 1, x);
 }
 
-void HeatField::add_vectors(double a, double v1[], double b, double v2[],
-                            double v[]) {
+void HeatField::add_vectors(float a, float v1[], float b, float v2[],
+                            float v[]) {
   v[0] = a * v1[0] + b * v2[0];
   v[1] = a * v1[1] + b * v2[1];
 }
 
-double HeatField::mean_curvature(const Matrixd &heat, int x, int y) {
-
-  int indexes[] = {-1, 1};
-  double sum = 0.0;
+float HeatField::mean_curvature(const Matrixd &heat, int x, int y) {
+  float sum = 0.0;
 
   sum += curvature(heat, x, y, x - 1, y);
   sum += curvature(heat, x, y, x + 1, y);
@@ -131,12 +128,12 @@ double HeatField::mean_curvature(const Matrixd &heat, int x, int y) {
   return 0.25 * sum;
 }
 
-double HeatField::module(double v[]) { return sqrt(v[0] * v[0] + v[1] * v[1]); }
+float HeatField::module(float v[]) { return sqrt(v[0] * v[0] + v[1] * v[1]); }
 
-double HeatField::curvature(const Matrixd &heat, double px, double py,
-                            double nx, double ny) {
-  double kpn, np[2], nn[2], p[] = {px, py}, n[] = {nx, ny}, t1[2], t2[2], t3[2],
-                            t4[2], t5[2];
+float HeatField::curvature(const Matrixd &heat, float px, float py,
+                            float nx, float ny) {
+  float kpn, np[2], nn[2], p[] = {px, py}, n[] = {nx, ny}, t1[2], t2[2], t3[2],
+                            t4[2];
 
   // Calculate normal at p and n
   normal(heat, px, py, np);
