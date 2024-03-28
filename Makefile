@@ -24,6 +24,9 @@ $(EXEC): $(OBJS)
 %.o: %.cpp
 	$(CC) $(CFLAGS) -c $< -o $@
 
+format:
+	clang-format -style=Microsoft -i *.cpp *.h
+
 # Rule to clean the project
 clean:
 	rm -f $(OBJS) $(EXEC)
